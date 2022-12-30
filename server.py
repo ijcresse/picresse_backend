@@ -39,7 +39,6 @@ dictConfig({
 #   create_tables.sql
 
 # what else don't i know?
-# how to connect to a db
 # how to connect to smtp
 # wsgi, what it is, how it integrates with apache web server
 
