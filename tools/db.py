@@ -43,7 +43,6 @@ def post_puzzle(puzzle, connection):
     cursor.execute(table_scripts[T_SCRIPT_POST_PUZZLE], (values,))
     print(cursor.statement)
     cursor.close()
-    return True
 
 def update_puzzle(puzzle, connection):
     cursor = connection.cursor()
@@ -51,14 +50,12 @@ def update_puzzle(puzzle, connection):
     cursor.execute(table_scripts[T_SCRIPT_UPDATE_PUZZLE], (values, where))
     print(cursor.statement)
     cursor.close()
-    return True
 
 def add_puzzle_completion(id, connection):
     cursor = connection.cursor()
     cursor.execute(table_scripts[T_SCRIPT_PUZZLE_COMPLETED], (id,))
     print(cursor.statement)
     cursor.close()
-    return True
 
 def close_db_connection(connection):
     connection.close()
