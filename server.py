@@ -1,3 +1,5 @@
+#main script. coordinates routes and passes functionality to helper functions.
+
 from flask import Flask, request, abort
 from logging.config import dictConfig
 
@@ -30,8 +32,6 @@ dictConfig({
 # script setup
 # server.py
 # tools/
-#   db.py 
-#   constants.py
 #   puzzle_list.py < for processing search requests, page logic etc
 #   email.py < for connecting to smtp server
 # setup/
