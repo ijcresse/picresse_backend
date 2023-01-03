@@ -3,8 +3,9 @@
 from flask import Flask, request, abort
 from logging.config import dictConfig
 import json
+import sys
 
-from tools import *
+from tools import db, puzzle_reader
 
 file = open('./tools/constants.json')
 data = json.load(file)
@@ -17,6 +18,16 @@ dictConfig(data['dictconfig'])
 # wsgi, what it is, how it integrates with apache web server
 
 app = Flask(__name__)
+app.config.from_prefixed_env()
+if (app.config["DB_USER"] == None or app.config["DB_PASS"] == None):
+    raise ValueError("No DB_USER or DB_PASS set for Flask application")
+else:
+    print("environment variables detected, starting up", file=sys.stdout)
+    db_user = app.config["DB_USER"]
+    db_pass = app.config["DB_PASS"]
+
+if (app.config["ENV"] == 'production'):
+    print("starting production version of server!")
 
 @app.get("/picresse/puzzle/list")
 def list():
@@ -27,7 +38,7 @@ def list():
         abort(400)
 
     try:
-        c = db.get_db_connection()
+        c = db.get_db_connection(db_user, db_pass)
     except:
         abort(500, description = "ERROR: database connection not available")
     
@@ -51,12 +62,12 @@ def search():
         abort(400)
     
     try:
-        c = db.get_db_connection()
+        c = db.get_db_connection(db_user, db_pass)
     except:
         abort(500, description = "ERROR: database connection not available")
 
     try:
-        rows = db.search_list(puzzle.search_params(puzzle), page_size, offset, c)
+        rows = db.search_list(puzzle_reader.search_params(puzzle), page_size, offset, c)
         db.close_db_connection(c)
     except:
         abort(400, description = "WARN: unable to retrieve search data")
@@ -69,12 +80,12 @@ def create():
     puzzle = request.get_json()
     
     try:
-        c = db.get_db_connection()
+        c = db.get_db_connection(db_user, db_pass)
     except:
         abort(500, description = "ERROR: database connection not available")
 
     try:
-        db.post_puzzle(puzzle.post_params(puzzle), c)
+        db.post_puzzle(puzzle_reader.post_params(puzzle), c)
         db.close_db_connection(c)
     except:
         abort(400, description = "WARN: unable to post puzzle")
@@ -82,11 +93,10 @@ def create():
     return 204
     
 
-#TODO: database health
 @app.get("/health")
 def health():
     try:
-        c = db.get_db_connection()
+        c = db.get_db_connection(db_user, db_pass)
         db.close_db_connection(c)
     except:
         return "DB DOWN", 500
@@ -94,4 +104,4 @@ def health():
 
 @app.get("/availability")
 def availability():
-    return 200
+    return {"status": 200, "message": "OK"}

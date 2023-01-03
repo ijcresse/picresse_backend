@@ -2,10 +2,13 @@
 
 import mariadb
 import json
-from puzzle import *
+from pathlib import Path
+import sys
 
-file = open('./constants.json')
-data = json.load(file)
+from .puzzle_reader import *
+
+data_file_path = Path(__file__).parent / "constants.json"
+data = json.load(open(data_file_path))
 db_params = data['db_params']
 table_scripts = data['table_scripts']
 
@@ -23,16 +26,16 @@ def get_db_connection(user, password):
 
 def get_list(pagesize, offset, connection):
     cursor = connection.cursor()
-    cursor.execute(table_scripts[T_SCRIPT_GET_LIST], (pagesize, offset))
-    print(cursor.statement)
+    cursor.execute(table_scripts[T_SCRIPT_GET_LIST] % (pagesize, offset))
+    print(cursor.statement, file=sys.stdout)
     rows = cursor.fetchall()
     cursor.close()
     return rows
 
 def search_list(params, pagesize, offset, connection):
     cursor = connection.cursor()
-    cursor.execute(table_scripts[T_SCRIPT_SEARCH_LIST], (params, pagesize, offset))
-    print(cursor.statement)
+    cursor.execute(table_scripts[T_SCRIPT_SEARCH_LIST] % (params, pagesize, offset))
+    print(cursor.statement, file=sys.stdout)
     rows = cursor.fetchall()
     cursor.close()
     return rows
@@ -40,21 +43,21 @@ def search_list(params, pagesize, offset, connection):
 def post_puzzle(puzzle, connection):
     cursor = connection.cursor()
     values = post_params(puzzle)
-    cursor.execute(table_scripts[T_SCRIPT_POST_PUZZLE], (values,))
-    print(cursor.statement)
+    cursor.execute(table_scripts[T_SCRIPT_POST_PUZZLE] % (values,))
+    print(cursor.statement, file=sys.stdout)
     cursor.close()
 
 def update_puzzle(puzzle, connection):
     cursor = connection.cursor()
     (values, where) = update_params(puzzle)
-    cursor.execute(table_scripts[T_SCRIPT_UPDATE_PUZZLE], (values, where))
-    print(cursor.statement)
+    cursor.execute(table_scripts[T_SCRIPT_UPDATE_PUZZLE] % (values, where))
+    print(cursor.statement, file=sys.stdout)
     cursor.close()
 
 def add_puzzle_completion(id, connection):
     cursor = connection.cursor()
-    cursor.execute(table_scripts[T_SCRIPT_PUZZLE_COMPLETED], (id,))
-    print(cursor.statement)
+    cursor.execute(table_scripts[T_SCRIPT_PUZZLE_COMPLETED] % (id,))
+    print(cursor.statement, file=sys.stdout)
     cursor.close()
 
 def close_db_connection(connection):
