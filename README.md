@@ -17,32 +17,30 @@ export FLASK_ENV=development
 python -m flask --app server --debug run
 ```
 
-### prod run (on existing apache web server)
+### first time setup (on hazasha.me, using apache2, debian10)
+#### this is more for me than anyone else
 ```
-screen -S picresse_server
-#head to the root page for apache web server
-cd /var/www/html
-sudo git clone picresse_backend
-cd picresse_backend
+cd /var/www/
+mkdir picresse
+cd picresse
+git clone picresse_backend
+mv picresse_backend/* .
+python3 -m pip install -r requirements.txt
+# may require installing mariadb and/or mariadb connector/c
 
-#setup virtual python environment
-python -m venv picresse_env
-source/picresse_env/activate
-#verify python env
-which python
+# setup mod-wsgi on the apache2 server. installation performed on debian 10
+sudo apt-get install libapache2-mod-wsgi -y
+systemctl restart apache2
+touch /etc/apache2/conf-available/mod-wsgi.conf
+#add in the following contents:
+WSGIScriptAlias /picresse /var/www/html/picresse/wsgi.py
+#save and close
 
-#install dependencies
-pip install -r requirements.txt
+#may need to run this as root
+a2enconf mod-wsgi
+systemctl restart apache2
 
-export FLASK_DB_USER=user
-export FLASK_DB_USER=pass
-export FLASK_ENV=production
-
-#verify dev server works
-python -m flask --app server --debug run
-
-#configure wsgi file
-cp tools/site.wsgi ./picresse_site.wsgi
-
+#back in picresse folder
+mod_wsgi-express start-server wsgi.py --processes 1
 ```
-
+verify serving python content via apache2 by accessing <site>/picresse, which should load the flask instance landing page.
