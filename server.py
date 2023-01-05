@@ -45,8 +45,8 @@ def list():
     try:
         rows = db.get_list(page_size, offset, c)
         db.close_db_connection(c)
-    except:
-        abort(400, description = "WARN: unable to retrieve list data")
+    except Exception as e:
+        abort(400, description = str(e))
 
     return [{'list': rows}]
     
@@ -69,12 +69,11 @@ def search():
     try:
         rows = db.search_list(puzzle_reader.search_params(puzzle), page_size, offset, c)
         db.close_db_connection(c)
-    except:
-        abort(400, description = "WARN: unable to retrieve search data")
+    except Exception as e:
+        abort(400, description = str(e))
 
     return [{'list': rows}]
 
-#don't forget applicatin/json header!
 @app.post("/picresse/puzzle/create")
 def create():
     puzzle = request.get_json()
@@ -85,12 +84,11 @@ def create():
         abort(500, description = "ERROR: database connection not available")
 
     try:
-        db.post_puzzle(puzzle_reader.post_params(puzzle), c)
+        db.post_puzzle(puzzle, c)
         db.close_db_connection(c)
-    except:
-        abort(400, description = "WARN: unable to post puzzle")
-
-    return 204
+    except Exception as e:
+        abort(400, description = str(e))
+    return "OK", 204
     
 
 @app.get("/health")

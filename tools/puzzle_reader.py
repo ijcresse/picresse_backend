@@ -1,3 +1,5 @@
+import sys
+
 #puzzle management functions
 
 def search_params(puzzle):
@@ -68,17 +70,21 @@ def update_params(puzzle):
 def post_params(puzzle):
     values = []
     try: 
-        values.append(puzzle.name)
+        values.append('"')
+        values.append(puzzle['name'])
+        values.append('"')
         values.append(',')
-        values.append(puzzle.creator)
+        values.append('"')
+        values.append(puzzle['creator'])
+        values.append('"')
         values.append(',')
-        values.append(puzzle.puzzle)
+        values.append('"')
+        values.append(puzzle['puzzle'])
+        values.append('"')
         values.append(',')
-        values.append(puzzle.puzzle[:2])
+        values.append(puzzle['puzzle'][:2].lstrip('0'))
         values.append(',')
-        values.append(puzzle.puzzle[2:2])
-        values.append(',')
-        values.append('0;')
+        values.append(puzzle['puzzle'][2:4].lstrip('0'))
     except:
         raise Exception("ERROR puzzle.post_params() could not process puzzle!")
     return ''.join(values)
