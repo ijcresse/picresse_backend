@@ -52,7 +52,7 @@ def post_puzzle(puzzle, connection):
 
 def update_puzzle(puzzle, connection):
     cursor = connection.cursor()
-    (values, where) = update_params(puzzle)
+    (values, where) = '(' + update_params(puzzle) + ');'
     cursor.execute(table_scripts[T_SCRIPT_UPDATE_PUZZLE] % (values, where))
     print(cursor.statement, file=sys.stdout)
     connection.commit()
@@ -60,7 +60,7 @@ def update_puzzle(puzzle, connection):
 
 def add_puzzle_completion(id, connection):
     cursor = connection.cursor()
-    cursor.execute(table_scripts[T_SCRIPT_PUZZLE_COMPLETED] % (id,))
+    cursor.execute(table_scripts[T_SCRIPT_PUZZLE_COMPLETED] % id)
     print(cursor.statement, file=sys.stdout)
     connection.commit()
     cursor.close()

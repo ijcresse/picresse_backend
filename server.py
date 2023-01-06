@@ -90,6 +90,21 @@ def create():
         abort(400, description = str(e))
     return "OK", 204
     
+@app.put("/picresse/puzzle/completed")
+def completed():
+    puzzle_id = request.args.get('id')
+
+    try:
+        c = db.get_db_connection(db_user, db_pass)
+    except:
+        abort(500, description = "ERROR: database connection not available")
+
+    try:
+        db.add_puzzle_completion(puzzle_id, c)
+        db.close_db_connection(c)
+    except Exception as e:
+        abort(400, description = str(e))
+    return "OK", 204
 
 @app.get("/health")
 def health():
