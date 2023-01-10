@@ -1,6 +1,7 @@
 #main script. coordinates routes and passes functionality to helper functions.
 
 from flask import Flask, request, abort
+from flask_cors import CORS, cross_origin
 from logging.config import dictConfig
 import json
 import sys
@@ -18,6 +19,7 @@ dictConfig(data['dictconfig'])
 # wsgi, what it is, how it integrates with apache web server
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/picresse/puzzle/*": {"origins": "http://localhost:3000"}})
 app.config.from_prefixed_env()
 if (app.config["DB_USER"] == None or app.config["DB_PASS"] == None):
     raise ValueError("No DB_USER or DB_PASS set for Flask application")

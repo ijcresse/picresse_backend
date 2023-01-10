@@ -15,6 +15,9 @@ def create_tables(user, password):
     db_params["password"] = ""
     cursor = connection.cursor()
     cursor.execute(table_script)
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 if len(sys.argv) > 3 and sys.argv[1] == '--create-tables':
     create_tables(sys.argv[2], sys.argv[3])
