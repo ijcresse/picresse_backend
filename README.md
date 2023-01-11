@@ -20,11 +20,8 @@ python -m flask --app server --debug run
 ### first time setup (on hazasha.me, using apache2, debian10)
 #### this is more for me than anyone else
 ```
-cd /var/www/
-mkdir picresse
-cd picresse
+cd /var/www/html
 git clone picresse_backend
-mv picresse_backend/* .
 python3 -m pip install -r requirements.txt
 # may require installing mariadb and/or mariadb connector/c
 
@@ -43,4 +40,16 @@ systemctl restart apache2
 #back in picresse folder
 mod_wsgi-express start-server wsgi.py --processes 1
 ```
-verify serving python content via apache2 by accessing <site>/picresse, which should load the flask instance landing page.
+verify serving python content via apache2 by accessing <site>:<port>/health
+
+### repeated deployments
+```
+cd /var/www/html/picresse_backend
+git pull
+# in case of any new requirements!
+pythom3 -m pip install -r requirements.txt
+systemctl restart apache2
+screen -r picresse
+mod_wsgi-express start-server wsgi.py --processes 1
+```
+verify /health endpoint
