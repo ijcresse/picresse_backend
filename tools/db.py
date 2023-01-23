@@ -18,6 +18,7 @@ T_SCRIPT_SEARCH_LIST = 2
 T_SCRIPT_POST_PUZZLE = 3
 T_SCRIPT_UPDATE_PUZZLE = 4
 T_SCRIPT_PUZZLE_COMPLETED = 5
+T_SCRIPT_GET_COUNT = 6
 
 def get_db_connection(user, password):
     db_params['user'] = user
@@ -32,6 +33,16 @@ def get_list(pagesize, offset, connection):
     connection.commit()
     cursor.close()
     return rows
+
+def get_count(connection):
+    cursor = connection.cursor()
+    cursor.execute(table_scripts[T_SCRIPT_GET_COUNT])
+    print(cursor.statement, file=sys.stdout)
+    (count, ) = cursor.fetchone()
+    print(count, file=sys.stdout)
+    #connection.commit()
+    cursor.close()
+    return count
 
 def search_list(params, pagesize, offset, connection):
     cursor = connection.cursor()

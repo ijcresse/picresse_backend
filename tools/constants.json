@@ -24,10 +24,11 @@
 
     "table_scripts": [
         "CREATE TABLE t_puzzles ( c_id INTEGER NOT NULL AUTO_INCREMENT, c_name VARCHAR(255) NOT NULL, c_creator VARCHAR(255) NOT NULL, c_width INTEGER NOT NULL, c_length INTEGER NOT NULL, c_puzzle VARCHAR(255) NOT NULL, c_date_created DATETIME DEFAULT CURRENT_TIMESTAMP, c_date_updated DATETIME NULL DEFAULT CURRENT_TIMESTAMP, c_date_deleted DATETIME NULL, c_is_warned BOOLEAN NOT NULL DEFAULT 0, c_times_completed INTEGER DEFAULT 0, PRIMARY KEY (c_id) );",
-        "SELECT c_id, c_name, c_creator, c_puzzle, c_width, c_length, c_date_created, c_is_warned, c_times_completed FROM t_puzzles LIMIT %s OFFSET %s;",
-        "SELECT c_id, c_name, c_creator, c_puzzle, c_width, c_length, c_date_created, c_is_warned, c_times_completed FROM t_puzzles WHERE %s LIMIT %s OFFSET %s;",
+        "SELECT c_id, c_name, c_creator, c_puzzle, c_width, c_length, c_date_created, c_is_warned, c_times_completed FROM t_puzzles ORDER BY c_id ASC LIMIT %s OFFSET %s;",
+        "SELECT c_id, c_name, c_creator, c_puzzle, c_width, c_length, c_date_created, c_is_warned, c_times_completed FROM t_puzzles WHERE %s ORDER BY  c_id ASC LIMIT %s OFFSET %s;",
         "INSERT INTO t_puzzles (c_name, c_creator, c_puzzle, c_width, c_length) VALUES %s",
         "UPDATE t_puzzles SET %s WHERE %s",
-        "UPDATE t_puzzles SET c_times_completed= c_times_completed + 1 WHERE c_id=%s"
+        "UPDATE t_puzzles SET c_times_completed= c_times_completed + 1 WHERE c_id=%s",
+        "SELECT COUNT(*) FROM t_puzzles"
     ]
 }

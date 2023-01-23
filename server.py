@@ -50,7 +50,22 @@ def list():
     except Exception as e:
         abort(400, description = str(e))
 
-    return [{'list': rows}]
+    return rows
+
+@app.get("/picresse/puzzle/count")
+def count():
+    try:
+        c = db.get_db_connection(db_user, db_pass)
+    except:
+        abort(500, description = "ERROR: database connection not available")
+
+    try:
+        count = db.get_count(c)
+        db.close_db_connection(c)
+    except Exception as e:
+        abort(500, description = str(e))
+
+    return {'count': count}
     
 #TODO: get all search params?
 @app.get("/picresse/puzzle/search")
@@ -74,7 +89,7 @@ def search():
     except Exception as e:
         abort(400, description = str(e))
 
-    return [{'list': rows}]
+    return {'list': rows}
 
 @app.post("/picresse/puzzle/create")
 def create():
